@@ -30,10 +30,13 @@ import 'package:trippath/features/auth/domain/usecases/sign_in_with_google_useca
     as _i617;
 import 'package:trippath/features/auth/domain/usecases/sign_out_usecase.dart'
     as _i54;
+import 'package:trippath/shared/services/auth/token_service.dart' as _i349;
+import 'package:trippath/shared/services/storage/secure_storage_service.dart'
+    as _i294;
 
+const String _prod = 'prod';
 const String _dev = 'dev';
 const String _test = 'test';
-const String _prod = 'prod';
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -44,25 +47,39 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
     gh.singleton<_i562.ApiClient>(() => _i562.ApiClient());
+    gh.singleton<_i294.SecureStorageService>(
+      () => _i294.SecureStorageService(),
+    );
     gh.singleton<_i116.GoogleSignIn>(
       () => registerModule.googleSignIn,
       instanceName: 'googleSignIn',
     );
-    gh.factory<_i636.AuthDataSource>(
-      () => _i201.AuthMockDataSource(
-        gh<_i116.GoogleSignIn>(instanceName: 'googleSignIn'),
+    gh.singleton<_i349.TokenService>(
+      () => _i349.TokenService(
+        gh<_i294.SecureStorageService>(),
+        gh<_i562.ApiClient>(),
       ),
-      registerFor: {_dev, _test},
     );
     gh.factory<_i636.AuthDataSource>(
       () => _i506.AuthRemoteDataSource(
         gh<_i562.ApiClient>(),
         gh<_i116.GoogleSignIn>(instanceName: 'googleSignIn'),
+        gh<_i349.TokenService>(),
       ),
       registerFor: {_prod},
     );
+    gh.factory<_i636.AuthDataSource>(
+      () => _i201.AuthMockDataSource(
+        gh<_i116.GoogleSignIn>(instanceName: 'googleSignIn'),
+        gh<_i349.TokenService>(),
+      ),
+      registerFor: {_dev, _test},
+    );
     gh.factory<_i99.AuthRepository>(
-      () => _i711.AuthRepositoryImpl(gh<_i636.AuthDataSource>()),
+      () => _i711.AuthRepositoryImpl(
+        gh<_i636.AuthDataSource>(),
+        gh<_i349.TokenService>(),
+      ),
     );
     gh.factory<_i617.SignInWithGoogleUseCase>(
       () => _i617.SignInWithGoogleUseCase(gh<_i99.AuthRepository>()),
