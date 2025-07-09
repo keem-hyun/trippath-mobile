@@ -16,6 +16,8 @@ class UserEntity with _$UserEntity {
     required String provider,
     required DateTime createdAt,
     DateTime? lastLoginAt,
+    String? accessToken,
+    String? refreshToken,
   }) = _UserEntity;
 
   factory UserEntity.fromJson(Map<String, dynamic> json) => _$UserEntityFromJson(json);
