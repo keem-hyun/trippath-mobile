@@ -8,6 +8,7 @@ extension RouterExtensions on BuildContext {
   void goToProfile() => go('/profile');
   void goToSearch() => go('/search');
   void goToTrip() => go('/trip');
+  void goToCreateTrip() => go('/trip/create');
   void goToTripDetail(String tripId) => go('/trip/$tripId');
   
   // Named navigation
@@ -21,5 +22,6 @@ extension RouterExtensions on BuildContext {
   Future<T?> pushToProfile<T>() => push<T>('/profile');
   Future<T?> pushToSearch<T>() => push<T>('/search');
   Future<T?> pushToTrip<T>() => push<T>('/trip');
+  Future<T?> pushToCreateTrip<T>() => push<T>('/trip/create');
   Future<T?> pushToTripDetail<T>(String tripId) => push<T>('/trip/$tripId');
 }
