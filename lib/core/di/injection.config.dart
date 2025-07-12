@@ -30,6 +30,18 @@ import 'package:trippath/features/auth/domain/usecases/sign_in_with_google_useca
     as _i617;
 import 'package:trippath/features/auth/domain/usecases/sign_out_usecase.dart'
     as _i54;
+import 'package:trippath/features/trip/data/datasources/trip_datasource.dart'
+    as _i955;
+import 'package:trippath/features/trip/data/datasources/trip_local_datasource.dart'
+    as _i812;
+import 'package:trippath/features/trip/data/repositories/trip_repository_impl.dart'
+    as _i949;
+import 'package:trippath/features/trip/domain/repositories/trip_repository.dart'
+    as _i469;
+import 'package:trippath/features/trip/domain/usecases/create_trip_usecase.dart'
+    as _i981;
+import 'package:trippath/features/trip/domain/usecases/get_trips_usecase.dart'
+    as _i360;
 import 'package:trippath/shared/services/auth/token_service.dart' as _i349;
 import 'package:trippath/shared/services/storage/secure_storage_service.dart'
     as _i294;
@@ -54,6 +66,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.googleSignIn,
       instanceName: 'googleSignIn',
     );
+    gh.factory<_i955.TripDataSource>(() => _i812.TripLocalDataSource());
     gh.singleton<_i349.TokenService>(
       () => _i349.TokenService(
         gh<_i294.SecureStorageService>(),
@@ -75,11 +88,20 @@ extension GetItInjectableX on _i174.GetIt {
       ),
       registerFor: {_dev, _test},
     );
+    gh.factory<_i469.TripRepository>(
+      () => _i949.TripRepositoryImpl(gh<_i955.TripDataSource>()),
+    );
     gh.factory<_i99.AuthRepository>(
       () => _i711.AuthRepositoryImpl(
         gh<_i636.AuthDataSource>(),
         gh<_i349.TokenService>(),
       ),
+    );
+    gh.factory<_i981.CreateTripUseCase>(
+      () => _i981.CreateTripUseCase(gh<_i469.TripRepository>()),
+    );
+    gh.factory<_i360.GetTripsUseCase>(
+      () => _i360.GetTripsUseCase(gh<_i469.TripRepository>()),
     );
     gh.factory<_i617.SignInWithGoogleUseCase>(
       () => _i617.SignInWithGoogleUseCase(gh<_i99.AuthRepository>()),
