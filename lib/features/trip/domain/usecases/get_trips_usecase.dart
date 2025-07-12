@@ -1,5 +1,5 @@
 import 'package:injectable/injectable.dart';
-import '../entities/trip.dart';
+import '../models/trip.dart';
 import '../repositories/trip_repository.dart';
 
 @injectable

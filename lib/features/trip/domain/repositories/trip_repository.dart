@@ -1,4 +1,4 @@
-import '../entities/trip.dart';
+import '../models/trip.dart';
 
 abstract class TripRepository {
   Future<List<Trip>> getTrips(String userId);
