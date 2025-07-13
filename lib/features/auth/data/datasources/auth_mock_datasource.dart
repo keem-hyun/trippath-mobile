@@ -5,7 +5,6 @@ import 'auth_datasource.dart';
 import '../../../../shared/services/auth/token_service.dart';
 
 @Injectable(as: AuthDataSource)
-@Environment(Environment.dev)
 @Environment(Environment.test)
 class AuthMockDataSource implements AuthDataSource {
   final GoogleSignIn _googleSignIn;

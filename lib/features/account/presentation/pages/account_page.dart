@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../shared/widgets/error_dialog.dart';
 import '../../../auth/presentation/providers/auth_view_model.dart';
 
 class AccountPage extends ConsumerWidget {
@@ -13,8 +14,16 @@ class AccountPage extends ConsumerWidget {
     ref.listen<AuthState>(
       authViewModelProvider,
       (previous, next) {
-        if (next.user == null) {
+        if (next.user == null && previous?.user != null) {
           context.go('/login');
+        }
+        
+        if (next.error != null && previous?.error != next.error) {
+          ErrorDialog.show(
+            context,
+            title: '로그아웃 오류',
+            message: next.error!,
+          );
         }
       },
     );

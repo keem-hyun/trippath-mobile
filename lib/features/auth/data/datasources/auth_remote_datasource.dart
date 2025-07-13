@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../../../../core/network/api_client.dart';
@@ -6,7 +7,7 @@ import 'auth_datasource.dart';
 import '../../../../shared/services/auth/token_service.dart';
 
 @Injectable(as: AuthDataSource)
-@Environment(Environment.prod)
+@Environment(Environment.dev)
 class AuthRemoteDataSource implements AuthDataSource {
   final ApiClient _apiClient;
   final GoogleSignIn _googleSignIn;
@@ -27,30 +28,68 @@ class AuthRemoteDataSource implements AuthDataSource {
       throw Exception('Google sign in cancelled');
     }
 
+    // Clear access token first to force refresh
+    await googleUser.clearAuthCache();
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
     
     // Send token to backend
-    final response = await _apiClient.dio.post(
-      '/auth/google',
-      data: {
-        'idToken': googleAuth.idToken,
-        'accessToken': googleAuth.accessToken,
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final userData = response.data['user'];
-      final accessToken = response.data['accessToken'];
-      final refreshToken = response.data['refreshToken'];
+    try {
+      print('📡 Sending auth request to: ${_apiClient.dio.options.baseUrl}/auth/mobile/google/token');
+      print('📤 Request data: email=${googleUser.email}');
+      print('🔐 idToken: ${googleAuth.idToken}');
       
-      // Create UserEntity with tokens
-      return UserEntity.fromJson({
-        ...userData,
-        'accessToken': accessToken,
-        'refreshToken': refreshToken,
-      });
-    } else {
-      throw Exception('Authentication failed: ${response.statusMessage}');
+      final response = await _apiClient.dio.post(
+        '/auth/mobile/google/token',
+        data: {
+          'idToken': googleAuth.idToken,
+          'email': googleUser.email,
+        },
+      );
+      
+      print('✅ Auth response: ${response.statusCode}');
+      print('📥 Response data: ${response.data}');
+
+      if (response.statusCode == 200) {
+        final accessToken = response.data['accessToken'];
+        final refreshToken = response.data['refreshToken'];
+        final email = response.data['email'];
+        final name = response.data['name'];
+        
+        // Create UserEntity with response data
+        return UserEntity(
+          id: googleUser.id, // Use Google user ID
+          email: email,
+          name: name,
+          profileImageUrl: googleUser.photoUrl,
+          provider: 'google',
+          createdAt: DateTime.now(),
+          lastLoginAt: DateTime.now(),
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+        );
+      } else {
+        print('❌ Auth failed with status: ${response.statusCode}');
+        throw Exception('Authentication failed: ${response.statusMessage}');
+      }
+    } catch (e) {
+      print('💥 Auth request error: $e');
+      if (e.toString().contains('Connection refused')) {
+        print('🔗 Check if API server is running at: ${_apiClient.dio.options.baseUrl}');
+        throw Exception('Connection refused');
+      } else if (e is DioException && e.response != null) {
+        print('🔍 Error response status: ${e.response?.statusCode}');
+        print('🔍 Error response data: ${e.response?.data}');
+        print('🔍 Error response headers: ${e.response?.headers}');
+        
+        // 서버에서 온 에러 메시지 사용
+        if (e.response?.data is Map<String, dynamic>) {
+          final errorData = e.response!.data as Map<String, dynamic>;
+          final message = errorData['message'] ?? 'Unknown error';
+          final code = errorData['code'] ?? 'UNKNOWN';
+          throw Exception('[$code] $message');
+        }
+      }
+      rethrow;
     }
   }
 
@@ -58,8 +97,21 @@ class AuthRemoteDataSource implements AuthDataSource {
   Future<void> signOut() async {
     // Backend logout
     try {
-      await _apiClient.dio.post('/auth/logout');
+      final refreshToken = await _tokenService.getRefreshToken();
+      if (refreshToken != null) {
+        print('📤 Sending logout request with refresh token');
+        await _apiClient.dio.post(
+          '/auth/mobile/logout',
+          options: Options(
+            headers: {
+              'x-refresh-token': refreshToken,
+            },
+          ),
+        );
+        print('✅ Logout successful');
+      }
     } catch (e) {
+      print('💥 Logout request error: $e');
       // Continue with logout even if backend call fails
     }
     

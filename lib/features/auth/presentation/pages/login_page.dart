@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/router/router_extensions.dart';
+import '../../../../shared/widgets/error_dialog.dart';
 import '../providers/auth_view_model.dart';
 
 class LoginPage extends ConsumerWidget {
@@ -16,9 +17,25 @@ class LoginPage extends ConsumerWidget {
       }
 
       if (next.error != null) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(next.error!)));
+        final error = next.error!;
+        
+        if (error.contains('Connection refused') || error.contains('network')) {
+          NetworkErrorDialog.show(
+            context,
+            message: '서버에 연결할 수 없습니다.\n네트워크 연결을 확인해주세요.',
+            onRetry: () {
+              ref.read(authViewModelProvider.notifier).signInWithGoogle();
+            },
+          );
+        } else if (error.contains('cancelled')) {
+          // Google 로그인 취소는 무시
+        } else {
+          ErrorDialog.show(
+            context,
+            title: '로그인 오류',
+            message: error,
+          );
+        }
       }
     });
 
