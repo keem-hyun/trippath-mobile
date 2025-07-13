@@ -46,9 +46,8 @@ import 'package:trippath/shared/services/auth/token_service.dart' as _i349;
 import 'package:trippath/shared/services/storage/secure_storage_service.dart'
     as _i294;
 
-const String _prod = 'prod';
-const String _dev = 'dev';
 const String _test = 'test';
+const String _dev = 'dev';
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -74,22 +73,22 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.factory<_i636.AuthDataSource>(
+      () => _i201.AuthMockDataSource(
+        gh<_i116.GoogleSignIn>(instanceName: 'googleSignIn'),
+        gh<_i349.TokenService>(),
+      ),
+      registerFor: {_test},
+    );
+    gh.factory<_i469.TripRepository>(
+      () => _i949.TripRepositoryImpl(gh<_i955.TripDataSource>()),
+    );
+    gh.factory<_i636.AuthDataSource>(
       () => _i506.AuthRemoteDataSource(
         gh<_i562.ApiClient>(),
         gh<_i116.GoogleSignIn>(instanceName: 'googleSignIn'),
         gh<_i349.TokenService>(),
       ),
-      registerFor: {_prod},
-    );
-    gh.factory<_i636.AuthDataSource>(
-      () => _i201.AuthMockDataSource(
-        gh<_i116.GoogleSignIn>(instanceName: 'googleSignIn'),
-        gh<_i349.TokenService>(),
-      ),
-      registerFor: {_dev, _test},
-    );
-    gh.factory<_i469.TripRepository>(
-      () => _i949.TripRepositoryImpl(gh<_i955.TripDataSource>()),
+      registerFor: {_dev},
     );
     gh.factory<_i99.AuthRepository>(
       () => _i711.AuthRepositoryImpl(
