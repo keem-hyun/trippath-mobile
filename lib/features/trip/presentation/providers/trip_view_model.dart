@@ -34,7 +34,7 @@ class TripViewModel extends StateNotifier<TripState> {
     }
   }
 
-  Future<void> createTrip({
+  Future<Trip?> createTrip({
     required String userId,
     required String name,
     required DateTime startDate,
@@ -58,11 +58,13 @@ class TripViewModel extends StateNotifier<TripState> {
         trips: [...state.trips, createdTrip],
         isLoading: false,
       );
+      return createdTrip;
     } catch (e) {
       state = state.copyWith(
         error: e.toString(),
         isLoading: false,
       );
+      return null;
     }
   }
 

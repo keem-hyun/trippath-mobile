@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../auth/presentation/providers/auth_view_model.dart';
 import '../providers/trip_state.dart';
 import '../providers/trip_view_model.dart';
+import '../../../../core/router/router_extensions.dart';
 
 class CreateTripPage extends ConsumerStatefulWidget {
   const CreateTripPage({super.key});
@@ -78,7 +79,7 @@ class _CreateTripPageState extends ConsumerState<CreateTripPage> {
     final authState = ref.read(authViewModelProvider);
     if (authState.user == null) return;
 
-    await ref.read(tripViewModelProvider.notifier).createTrip(
+    final createdTrip = await ref.read(tripViewModelProvider.notifier).createTrip(
           userId: authState.user!.id,
           name: _nameController.text,
           startDate: _startDate!,
@@ -86,8 +87,10 @@ class _CreateTripPageState extends ConsumerState<CreateTripPage> {
           description: _descriptionController.text,
         );
 
-    if (mounted) {
-      context.pop();
+    if (mounted && createdTrip != null) {
+      // Select the created trip and navigate to its detail page
+      ref.read(tripViewModelProvider.notifier).selectTrip(createdTrip);
+      context.goToTripDetail(createdTrip.id);
     }
   }
 
