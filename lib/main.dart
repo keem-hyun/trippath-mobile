@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'core/di/injection.dart';
 import 'core/router/app_router.dart';
+import 'core/design_system/design_system.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,10 +22,9 @@ class MyApp extends ConsumerWidget {
     
     return MaterialApp.router(
       title: 'TripPath',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.light,
       routerConfig: router,
     );
   }
