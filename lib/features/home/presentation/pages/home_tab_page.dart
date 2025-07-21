@@ -113,8 +113,8 @@ class HomeTabPage extends ConsumerWidget {
         children: [
           Text(
             '어디로 떠나볼까요?',
-            style: AppTextStyles.headlineSmall.copyWith(
-              fontWeight: AppTypography.bold,
+            style: AppTypography.headingXL.copyWith(
+              fontWeight: AppTypography.semiBold,
               color: AppColors.textPrimary,
             ),
             textAlign: TextAlign.center,
@@ -122,7 +122,7 @@ class HomeTabPage extends ConsumerWidget {
           const SizedBox(height: 16),
           Text(
             '아직 등록된 여행이 없어요.\n나만의 여행 일정을 만들어보세요.',
-            style: AppTextStyles.bodyMedium.copyWith(
+            style: AppTypography.paragraphM.copyWith(
               color: AppColors.textSecondary,
             ),
             textAlign: TextAlign.center,
@@ -144,7 +144,7 @@ class HomeTabPage extends ConsumerWidget {
               ),
               child: Text(
                 '여행 추가하기',
-                style: AppTextStyles.button.copyWith(
+                style: AppTypography.labelM.copyWith(
                   color: AppColors.white,
                   fontWeight: AppTypography.semiBold,
                 ),
@@ -281,8 +281,8 @@ class HomeTabPage extends ConsumerWidget {
       children: [
         Text(
           '내 여행',
-          style: AppTextStyles.headlineMedium.copyWith(
-            fontWeight: AppTypography.bold,
+          style: AppTypography.headingXXL.copyWith(
+            fontWeight: AppTypography.semiBold,
           ),
         ),
         const Text(
