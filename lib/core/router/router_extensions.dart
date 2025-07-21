@@ -10,6 +10,7 @@ extension RouterExtensions on BuildContext {
   void goToTrip() => go('/trip');
   void goToCreateTrip() => go('/trip/create');
   void goToTripDetail(String tripId) => go('/trip/$tripId');
+  void goToCreateSchedule(String tripId, DateTime selectedDate) => go('/trip/$tripId/schedule/create?date=${selectedDate.toIso8601String()}');
   
   // Named navigation
   void goToNamed(String name, {Map<String, String>? params, Map<String, dynamic>? queryParams}) {
@@ -24,4 +25,5 @@ extension RouterExtensions on BuildContext {
   Future<T?> pushToTrip<T>() => push<T>('/trip');
   Future<T?> pushToCreateTrip<T>() => push<T>('/trip/create');
   Future<T?> pushToTripDetail<T>(String tripId) => push<T>('/trip/$tripId');
+  Future<T?> pushToCreateSchedule<T>(String tripId, DateTime selectedDate) => push<T>('/trip/$tripId/schedule/create?date=${selectedDate.toIso8601String()}');
 }

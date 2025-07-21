@@ -4,6 +4,7 @@ import '../../features/base/presentation/pages/base_page.dart';
 import '../../features/splash/presentation/pages/splash_page.dart';
 import '../../features/trip/presentation/pages/create_trip_page.dart';
 import '../../features/trip/presentation/pages/trip_detail_page.dart';
+import '../../features/trip/presentation/pages/create_schedule_page.dart';
 
 abstract class Routes {
   static const String splash = '/splash';
@@ -14,6 +15,7 @@ abstract class Routes {
   static const String trip = '/trip';
   static const String createTrip = '/trip/create';
   static const String tripDetail = '/trip/:id';
+  static const String createSchedule = '/trip/:tripId/schedule/create';
 }
 
 abstract class AppRoutes {
@@ -44,6 +46,19 @@ abstract class AppRoutes {
       builder: (context, state) {
         final tripId = state.pathParameters['id']!;
         return TripDetailPage(tripId: tripId);
+      },
+    ),
+    GoRoute(
+      path: Routes.createSchedule,
+      name: 'createSchedule',
+      builder: (context, state) {
+        final tripId = state.pathParameters['tripId']!;
+        final dateString = state.uri.queryParameters['date']!;
+        final selectedDate = DateTime.parse(dateString);
+        return CreateSchedulePage(
+          tripId: tripId,
+          selectedDate: selectedDate,
+        );
       },
     ),
   ];
