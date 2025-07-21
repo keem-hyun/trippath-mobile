@@ -32,7 +32,7 @@ class AppTheme {
       centerTitle: true,
       backgroundColor: AppColors.background,
       foregroundColor: AppColors.textPrimary,
-      titleTextStyle: AppTypography.titleLarge.copyWith(
+      titleTextStyle: AppTypography.labelL.copyWith(
         color: AppColors.textPrimary,
         fontWeight: AppTypography.semiBold,
       ),
@@ -43,7 +43,7 @@ class AppTheme {
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.white,
-        textStyle: AppTypography.button,
+        textStyle: AppTypography.labelM,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -54,7 +54,7 @@ class AppTheme {
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: AppColors.primary,
-        textStyle: AppTypography.button,
+        textStyle: AppTypography.labelM,
       ),
     ),
     
@@ -78,8 +78,8 @@ class AppTheme {
         borderRadius: BorderRadius.circular(8),
         borderSide: BorderSide(color: AppColors.error, width: 1),
       ),
-      labelStyle: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondary),
-      hintStyle: AppTypography.bodyMedium.copyWith(color: AppColors.textTertiary),
+      labelStyle: AppTypography.paragraphM.copyWith(color: AppColors.textSecondary),
+      hintStyle: AppTypography.paragraphM.copyWith(color: AppColors.textTertiary),
     ),
     
     // Card Theme
@@ -121,7 +121,7 @@ class AppTheme {
       centerTitle: true,
       backgroundColor: AppColors.backgroundDark,
       foregroundColor: AppColors.textPrimaryDark,
-      titleTextStyle: AppTypography.titleLarge.copyWith(
+      titleTextStyle: AppTypography.labelL.copyWith(
         color: AppColors.textPrimaryDark,
         fontWeight: AppTypography.semiBold,
       ),
@@ -132,7 +132,7 @@ class AppTheme {
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primaryLight,
         foregroundColor: AppColors.black,
-        textStyle: AppTypography.button,
+        textStyle: AppTypography.labelM,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -143,7 +143,7 @@ class AppTheme {
     textButtonTheme: TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: AppColors.primaryLight,
-        textStyle: AppTypography.button,
+        textStyle: AppTypography.labelM,
       ),
     ),
     
@@ -167,8 +167,8 @@ class AppTheme {
         borderRadius: BorderRadius.circular(8),
         borderSide: BorderSide(color: AppColors.error, width: 1),
       ),
-      labelStyle: AppTypography.bodyMedium.copyWith(color: AppColors.textSecondaryDark),
-      hintStyle: AppTypography.bodyMedium.copyWith(color: AppColors.textTertiaryDark),
+      labelStyle: AppTypography.paragraphM.copyWith(color: AppColors.textSecondaryDark),
+      hintStyle: AppTypography.paragraphM.copyWith(color: AppColors.textTertiaryDark),
     ),
     
     // Card Theme
