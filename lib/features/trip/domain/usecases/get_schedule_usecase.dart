@@ -1,7 +1,9 @@
 import 'package:dartz/dartz.dart';
+import 'package:injectable/injectable.dart';
 import '../models/schedule.dart';
 import '../repositories/schedule_repository.dart';
 
+@injectable
 class GetScheduleUseCase {
   final ScheduleRepository repository;
 

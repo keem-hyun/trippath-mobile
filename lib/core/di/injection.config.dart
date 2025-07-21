@@ -30,23 +30,35 @@ import 'package:trippath/features/auth/domain/usecases/sign_in_with_google_useca
     as _i617;
 import 'package:trippath/features/auth/domain/usecases/sign_out_usecase.dart'
     as _i54;
+import 'package:trippath/features/trip/data/datasources/schedule_datasource.dart'
+    as _i602;
+import 'package:trippath/features/trip/data/datasources/schedule_mock_datasource.dart'
+    as _i604;
 import 'package:trippath/features/trip/data/datasources/trip_datasource.dart'
     as _i955;
 import 'package:trippath/features/trip/data/datasources/trip_local_datasource.dart'
     as _i812;
+import 'package:trippath/features/trip/data/repositories/schedule_repository_impl.dart'
+    as _i313;
 import 'package:trippath/features/trip/data/repositories/trip_repository_impl.dart'
     as _i949;
+import 'package:trippath/features/trip/domain/repositories/schedule_repository.dart'
+    as _i1012;
 import 'package:trippath/features/trip/domain/repositories/trip_repository.dart'
     as _i469;
+import 'package:trippath/features/trip/domain/usecases/create_schedule_usecase.dart'
+    as _i790;
 import 'package:trippath/features/trip/domain/usecases/create_trip_usecase.dart'
     as _i981;
+import 'package:trippath/features/trip/domain/usecases/get_schedule_usecase.dart'
+    as _i438;
 import 'package:trippath/features/trip/domain/usecases/get_trips_usecase.dart'
     as _i360;
 import 'package:trippath/shared/services/auth/token_service.dart' as _i349;
 import 'package:trippath/shared/services/storage/secure_storage_service.dart'
     as _i294;
 
-const String _test = 'test';
+const String _prod = 'prod';
 const String _dev = 'dev';
 
 extension GetItInjectableX on _i174.GetIt {
@@ -65,6 +77,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => registerModule.googleSignIn,
       instanceName: 'googleSignIn',
     );
+    gh.lazySingleton<_i602.ScheduleDataSource>(
+      () => _i604.ScheduleMockDataSource(),
+    );
     gh.factory<_i955.TripDataSource>(() => _i812.TripLocalDataSource());
     gh.singleton<_i349.TokenService>(
       () => _i349.TokenService(
@@ -72,15 +87,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i562.ApiClient>(),
       ),
     );
-    gh.factory<_i636.AuthDataSource>(
-      () => _i201.AuthMockDataSource(
-        gh<_i116.GoogleSignIn>(instanceName: 'googleSignIn'),
-        gh<_i349.TokenService>(),
-      ),
-      registerFor: {_test},
+    gh.lazySingleton<_i1012.ScheduleRepository>(
+      () => _i313.ScheduleRepositoryImpl(gh<_i602.ScheduleDataSource>()),
     );
-    gh.factory<_i469.TripRepository>(
-      () => _i949.TripRepositoryImpl(gh<_i955.TripDataSource>()),
+    gh.factory<_i438.GetScheduleUseCase>(
+      () => _i438.GetScheduleUseCase(gh<_i1012.ScheduleRepository>()),
+    );
+    gh.factory<_i790.CreateScheduleUseCase>(
+      () => _i790.CreateScheduleUseCase(gh<_i1012.ScheduleRepository>()),
     );
     gh.factory<_i636.AuthDataSource>(
       () => _i506.AuthRemoteDataSource(
@@ -88,7 +102,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i116.GoogleSignIn>(instanceName: 'googleSignIn'),
         gh<_i349.TokenService>(),
       ),
+      registerFor: {_prod},
+    );
+    gh.factory<_i636.AuthDataSource>(
+      () => _i201.AuthMockDataSource(
+        gh<_i116.GoogleSignIn>(instanceName: 'googleSignIn'),
+        gh<_i349.TokenService>(),
+      ),
       registerFor: {_dev},
+    );
+    gh.factory<_i469.TripRepository>(
+      () => _i949.TripRepositoryImpl(gh<_i955.TripDataSource>()),
     );
     gh.factory<_i99.AuthRepository>(
       () => _i711.AuthRepositoryImpl(
