@@ -141,7 +141,9 @@ class _TripDetailPageState extends ConsumerState<TripDetailPage> {
                             const SizedBox(height: 24),
                             ElevatedButton(
                               onPressed: () {
-                                // TODO: Navigate to add schedule
+                                if (selectedDate != null) {
+                                  context.pushToCreateSchedule(widget.tripId, selectedDate!);
+                                }
                               },
                               style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(
